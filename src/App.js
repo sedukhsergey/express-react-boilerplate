@@ -1,5 +1,8 @@
 import React from 'react';
+import { Main } from './components';
 
-const App = props => <div>Hello from react ddd</div>
+const App = props => <div>
+    <Main />
+</div>
 
 export default App;
