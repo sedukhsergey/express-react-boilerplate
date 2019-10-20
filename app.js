@@ -1,4 +1,5 @@
 var express = require('express');
+const MongoClient = require("mongodb").MongoClient;
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
@@ -6,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var debug = require('debug')('my-application');
 const profiles = require('./routes/profiles');
 var app = express();
 // view engine setup
@@ -26,7 +28,6 @@ app.use(function(req, res, next) {
     next(err);
 });
 /// error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
@@ -49,5 +50,22 @@ app.use(function(err, req, res, next) {
     });
 });
 
+const constructor = new MongoClient('mongodb://localhost:27017/', {useNewUrlParser: true, useUnifiedTopology: true});
+
+let dbClient;
+
+constructor.connect(function(err, client){
+    if(err) return console.log(err);
+    dbClient = client;
+    app.locals.collection = client.db("usersdb").collection("users");
+    app.locals.profiles = client.db("profilesdb").collection("profiles");
+});
+
+// const constructor = require('../db')
+app.set('port', process.env.PORT || 3000);
+
+const server = app.listen(app.get('port'), function(){
+    debug('Express server listening on port ' + server.address().port);
+});
 
 module.exports = app;
