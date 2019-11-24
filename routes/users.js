@@ -17,6 +17,8 @@ router.get('/', (req, res, next) => {
       res.send(users)
     });
   }
+      res.setHeader("Location", "/profiles");
+
 });
 
 router.post("/", function (req, res) {
